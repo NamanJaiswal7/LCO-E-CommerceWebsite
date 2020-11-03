@@ -1,7 +1,9 @@
 import { truncate } from 'lodash';
 import mongoose from 'mongoose';
 //const { Schema } = mongoose;
+const crypto= require('crypto');
 
+const { v4: uuidv4 } = require('uuid');
 const userSchema = new mongoose.Schema({
   name: {
       type: String,
@@ -39,6 +41,16 @@ const userSchema = new mongoose.Schema({
   }
 });
 
+userSchema.virtual("password")
+    .set(funtion(password){
+      this._password= password,
+      this.salt = uuidv4()
+
+    })
+    .get()
+
+//yaha pr kya kar raha hai ki koi password hum log dalenge plain toh
+// usko secured yani encypt kar ke store karege
 userSchema.method ={
   securePassword: function(plainpassword){
     if(!password) return "";
@@ -50,5 +62,5 @@ userSchema.method ={
       return "";
     }
   }
-}
+} 
 module.exports=mongoose.model("user",userSchema);
